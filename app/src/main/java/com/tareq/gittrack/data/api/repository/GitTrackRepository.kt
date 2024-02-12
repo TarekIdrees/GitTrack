@@ -1,36 +1,43 @@
 package com.tareq.gittrack.data.api.repository
 
+import android.content.res.Resources.NotFoundException
 import android.util.Log
-import com.tareq.gittrack.data.api.model.GithubUser
+import com.tareq.gittrack.data.api.model.GithubGeneralUserInformationResponse
+import com.tareq.gittrack.data.api.model.GithubUserResponse
 import com.tareq.gittrack.data.api.service.GitTrackApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import retrofit2.Response
 import javax.inject.Inject
 
 interface GitTrackRepository {
-    suspend fun getGithubUser(user: String): Flow<GithubUser>
+    suspend fun searchGithubUser(user: String): Flow<GithubUserResponse>
+    suspend fun searchGithubUsers(searchTerm: String): Flow<List<GithubGeneralUserInformationResponse>>
 }
 
 class GitTrackRepositoryImpl @Inject constructor(
     private val gitTrackApiService: GitTrackApiService
 ) : GitTrackRepository {
-    override suspend fun getGithubUser(
+    override suspend fun searchGithubUser(
         user: String
-    ): Flow<GithubUser> =
-        flow {
-            val response = gitTrackApiService.getGithubUser(user)
-            try {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    Log.d("GitTrackRepository", "Github user is: ${responseBody?.name}")
-                    responseBody?.let {
-                        emit(it)
-                    }
-                } else {
-                    Log.d("GitTrackRepository", "Github user error: ${response.code()}")
-                }
-            } catch (e: Exception) {
-                Log.d("GitTrackRepository", "Github user exception: ${e.message}")
+    ): Flow<GithubUserResponse> =
+        wrap(gitTrackApiService.searchGithubUser(user))
+
+    override suspend fun searchGithubUsers(searchTerm: String)
+    : Flow<List<GithubGeneralUserInformationResponse>> {
+        return wrap(gitTrackApiService.searchGithubUsers(searchTerm)).map { githubSearchResponse ->
+            githubSearchResponse.githubUsers.orEmpty().filterNotNull()
+        }
+    }
+
+
+    private suspend fun <T> wrap(function: Response<T>): Flow<T> {
+        return flow {
+            if (function.isSuccessful) {
+                Log.d("RepoTarek", function.body().toString())
+                function.body()?.let { emit(it) } ?: throw NotFoundException()
             }
         }
+    }
 }
