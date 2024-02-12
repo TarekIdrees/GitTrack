@@ -3,7 +3,7 @@ package com.tareq.gittrack.data.api.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GithubUser(
+data class GithubUserResponse(
     @SerializedName("avatar_url")
     val avatarUrl: String?,
     @SerializedName("bio")
