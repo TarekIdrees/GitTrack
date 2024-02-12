@@ -7,10 +7,10 @@ androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 activity-compose = "1.8.2"
 compose-bom = "2024.02.00"
-dagger-hilt = "2.48"
+dagger-hilt = "2.50"
 hilt-navigation = "1.1.0"
 foundation = "1.6.1"
-hilt-compiler = "2.44"
+hilt-compiler = "2.50"
 serilization-plugin = "1.9.22"
 serilization = "1.6.0"
 sqldelight = "2.0.1"
@@ -19,6 +19,8 @@ lifecycle = "2.7.0"
 navigation-compose = "2.7.6"
 okhttp-bom = "4.12.0"
 retrofit = "2.9.0"
+lottie = "4.2.0"
+coil = "2.5.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -58,6 +60,9 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor" 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-json-convertor = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
+lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
+
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 [bundles]
 hilt = ["dagger-hilt", "hilt-navigation"]
