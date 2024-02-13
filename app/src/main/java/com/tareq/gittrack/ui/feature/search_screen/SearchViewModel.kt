@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
 //    }
 
     suspend fun getGithubUsers(searchTerm: String) {
-        _state.update { it.copy(isLoading = true) }
+        _state.update { it.copy(isLoading = true, searchTerm = searchTerm) }
         tryToExecute(
             { searchGithubUsersUseCase(searchTerm) },
             ::onGetGithubUsersSuccess,
@@ -38,7 +38,6 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onGetGithubUsersSuccess(githubUsers: List<GithubUserEntity>) {
-        Log.d("TarekViewModel",githubUsers.toString())
         _state.update {
             it.copy(
                 isLoading = false,
@@ -54,13 +53,5 @@ class SearchViewModel @Inject constructor(
 
     private fun onGetGithubUsersError(error: ErrorHandler) {
         Log.d("Tarek", error.toString())
-    }
-
-    fun updateSearchTerm(searchTerm: String) {
-        _state.update {
-            it.copy(
-                searchTerm = searchTerm
-            )
-        }
     }
 }
