@@ -1,10 +1,10 @@
 package com.tareq.gittrack.data.api.repository
 
-import android.content.res.Resources.NotFoundException
-import android.util.Log
+
 import com.tareq.gittrack.data.api.model.GithubGeneralUserInformationResponse
 import com.tareq.gittrack.data.api.model.GithubUserResponse
 import com.tareq.gittrack.data.api.service.GitTrackApiService
+import com.tareq.gittrack.data.api.util.NotFoundException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -35,7 +35,6 @@ class GitTrackRepositoryImpl @Inject constructor(
     private suspend fun <T> wrap(function: Response<T>): Flow<T> {
         return flow {
             if (function.isSuccessful) {
-                Log.d("RepoTarek", function.body().toString())
                 function.body()?.let { emit(it) } ?: throw NotFoundException()
             }
         }
