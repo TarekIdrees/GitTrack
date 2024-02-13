@@ -4,9 +4,12 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,14 +46,19 @@ fun GithubUserCard(
         Column (
             modifier = Modifier.fillMaxWidth()
         ){
-            Image(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
-                painter = rememberAsyncImagePainter(model = githubUser.avatarUrl),
-                contentDescription = "github user image",
-                contentScale = ContentScale.Crop
-            )
+                    .aspectRatio(1.5f)
+            ) {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = rememberAsyncImagePainter(model = githubUser.avatarUrl),
+                    contentDescription = "github user image",
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.TopStart,
+                )
+            }
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)
             ) {
@@ -113,9 +121,12 @@ fun GithubUserCard(
                 Column(
                     modifier = Modifier.weight(1.2f),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.End
+                    horizontalAlignment = Alignment.End,
                 ) {
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
                         Text("location", style = MaterialTheme.typography.labelSmall)
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
@@ -125,7 +136,10 @@ fun GithubUserCard(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
                         Text("following", style = MaterialTheme.typography.labelSmall)
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
@@ -135,7 +149,10 @@ fun GithubUserCard(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
                         Text("followers", style = MaterialTheme.typography.labelSmall)
                         Spacer(modifier = modifier.height(2.dp))
                         Text(

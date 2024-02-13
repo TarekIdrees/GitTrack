@@ -21,7 +21,7 @@ class SearchGithubUserUseCase @Inject constructor(
             bio = bio ?: "Undefined",
             company = company ?: "Undefined",
             avatarUrl = avatarUrl ?: "Undefined",
-            createdAt = createdAt ?: "Undefined",
+            createdAt = createdAt?.substringBefore("T") ?: "Undefined",
             email = email?.toString() ?: "Undefined",
             followers = followers?.toString() ?: "Undefined",
             following = following?.toString() ?: "Undefined",
