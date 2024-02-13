@@ -38,6 +38,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onGetGithubUsersSuccess(githubUsers: List<GithubUserEntity>) {
+        Log.d("TarekViewModel",githubUsers.toString())
         _state.update {
             it.copy(
                 isLoading = false,

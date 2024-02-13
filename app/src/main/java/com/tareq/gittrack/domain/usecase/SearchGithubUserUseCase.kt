@@ -17,15 +17,15 @@ class SearchGithubUserUseCase @Inject constructor(
 
     private fun GithubUserResponse.toGithubUserEntity(): GithubUserEntity {
         return GithubUserEntity(
-            name = name ?: "",
-            bio = bio ?: "",
-            company = company ?: "",
-            avatarUrl = avatarUrl ?: "",
-            createdAt = createdAt ?: "",
-            email = email.toString(),
-            followers = followers.toString(),
-            following = following.toString(),
-            location = location ?: ""
+            name = login ?: "Undefined",
+            bio = bio ?: "Undefined",
+            company = company ?: "Undefined",
+            avatarUrl = avatarUrl ?: "Undefined",
+            createdAt = createdAt ?: "Undefined",
+            email = email?.toString() ?: "Undefined",
+            followers = followers?.toString() ?: "Undefined",
+            following = following?.toString() ?: "Undefined",
+            location = location ?: "Undefined"
         )
     }
 }
