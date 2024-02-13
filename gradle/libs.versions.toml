@@ -21,6 +21,7 @@ okhttp-bom = "4.12.0"
 retrofit = "2.9.0"
 lottie = "4.2.0"
 coil = "2.5.0"
+mockk = "1.13.9"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -63,6 +64,7 @@ retrofit-json-convertor = { group = "com.squareup.retrofit2", name = "converter-
 lottie = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie" }
 
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 [bundles]
 hilt = ["dagger-hilt", "hilt-navigation"]
