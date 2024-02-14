@@ -59,7 +59,7 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(top = 16.dp),
-            label = { Text("Search") },
+            label = { Text("Search", color = MaterialTheme.colorScheme.onSurface) },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = "search icon")
             },
@@ -80,6 +80,10 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
                 focusedLeadingIconColor = Brand,
                 focusedPlaceholderColor = Brand,
                 focusedLabelColor = Brand,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = Brand
             ),
         )
         ContentVisibility(state = state.screenContentVisibility()) {

@@ -2,6 +2,7 @@ package com.tareq.gittrack.ui.feature.search_screen.composables
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,12 +41,14 @@ fun GithubUserCard(
         mutableStateOf(false)
     }
     Card(
-        modifier = modifier.animateContentSize(),
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .animateContentSize(),
         onClick = { /*TODO*/ }
     ) {
-        Column (
+        Column(
             modifier = Modifier.fillMaxWidth()
-        ){
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -65,7 +68,8 @@ fun GithubUserCard(
                 Text(
                     text = githubUser.name, maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = modifier.height(8.dp))
                 Text(
@@ -73,7 +77,8 @@ fun GithubUserCard(
                     text = githubUser.bio,
                     maxLines = if (showFullCard) 5 else 2,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(0.7f)
                 )
             }
             Spacer(modifier = modifier.height(30.dp))
@@ -88,33 +93,48 @@ fun GithubUserCard(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Column {
-                        Text("company", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            "company",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
                             githubUser.company,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     Column {
-                        Text("email", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            "email",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
                             githubUser.email,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     Column {
-                        Text("createdAt", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            "createdAt",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
                             githubUser.createdAt,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -127,39 +147,54 @@ fun GithubUserCard(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.End
                     ) {
-                        Text("location", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            "location",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
                             githubUser.location,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.End
                     ) {
-                        Text("following", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            "following",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
                             githubUser.following,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.End
                     ) {
-                        Text("followers", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            "followers",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                         Spacer(modifier = modifier.height(2.dp))
                         Text(
                             githubUser.followers,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
