@@ -15,12 +15,16 @@ class SearchViewModel @Inject constructor(
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()) {
 
     suspend fun getGithubUsers(searchTerm: String) {
-        _state.update { it.copy(isLoading = true) }
-        tryToExecute(
-            { searchGithubUsersUseCase(searchTerm) },
-            ::onGetGithubUsersSuccess,
-            ::onGetGithubUsersError
-        )
+        if (searchTerm.isBlank()) {
+            showToast("Search term should not be empty!")
+        } else {
+            _state.update { it.copy(isLoading = true) }
+            tryToExecute(
+                { searchGithubUsersUseCase(searchTerm) },
+                ::onGetGithubUsersSuccess,
+                ::onGetGithubUsersError
+            )
+        }
     }
 
     private fun onGetGithubUsersSuccess(githubUsers: List<GithubUser>) {
@@ -43,5 +47,18 @@ class SearchViewModel @Inject constructor(
 
     fun updateSearchTerm(searchTerm: String) {
         _state.update { it.copy(searchTerm = searchTerm) }
+    }
+
+    private fun showToast(message: String) {
+        _state.update {
+            it.copy(
+                toast = state.value.toast.copy(
+                    isShow = true,
+                    message = message
+                ),
+                isLoading = false
+            )
+        }
+        effectActionExecutor(_effect, SearchUiEffect.ShowToastEffect)
     }
 }

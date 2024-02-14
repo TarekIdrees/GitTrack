@@ -46,9 +46,9 @@ abstract class BaseViewModel<S, E>(initialState: S) : ViewModel() {
     protected val _effect = MutableSharedFlow<E>()
     val effect = _effect.asSharedFlow()
 
-    protected fun <T : BaseUiEffect> effectActionExecutor(
-        _effect: MutableSharedFlow<T>,
-        effect: T,
+    protected fun effectActionExecutor(
+        _effect: MutableSharedFlow<E>,
+        effect: E,
     ) {
         viewModelScope.launch {
             _effect.emit(effect)

@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -30,13 +31,28 @@ import com.tareq.gittrack.ui.common_composables.ContentVisibility
 import com.tareq.gittrack.ui.common_composables.Loading
 import com.tareq.gittrack.ui.feature.search_screen.composables.GithubUserCard
 import com.tareq.gittrack.ui.theme.Brand
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collectLatest {
+            when (it) {
+                SearchUiEffect.ShowToastEffect -> Toast.makeText(
+                    context,
+                    state.toast.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
     SearchContent(viewModel = viewModel, state = state)
 }
 
