@@ -1,6 +1,5 @@
 package com.tareq.gittrack.ui.feature.search_screen
 
-import android.util.Log
 import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.usecase.SearchGithubUsersUseCase
 import com.tareq.gittrack.domain.util.ErrorHandler
@@ -18,7 +17,14 @@ class SearchViewModel @Inject constructor(
         if (searchTerm.isBlank()) {
             showToast("Search term should not be empty!")
         } else {
-            _state.update { it.copy(isLoading = true) }
+            _state.update {
+                it.copy(
+                    isLoading = true,
+                    isError = false,
+                    error = null,
+                    searchPlaceholderVisibility = false
+                )
+            }
             tryToExecute(
                 { searchGithubUsersUseCase(searchTerm) },
                 ::onGetGithubUsersSuccess,
@@ -42,7 +48,15 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onGetGithubUsersError(error: ErrorHandler) {
-        Log.d("Tarek", error.toString())
+        _state.update { it.copy(isLoading = false, isError = true, error = error) }
+        when (error) {
+            ErrorHandler.Forbidden -> showToast("Exceed the limit of search wait 1 hour please")
+            ErrorHandler.InternalServer -> showToast("Server has a problem")
+            ErrorHandler.InvalidData -> showToast("please search by valid github users name")
+            ErrorHandler.InvalidInput -> showToast("please search by valid github users name")
+            ErrorHandler.NoConnection -> showToast("no network connection")
+            ErrorHandler.NotFound -> showToast("users not found")
+        }
     }
 
     fun updateSearchTerm(searchTerm: String) {

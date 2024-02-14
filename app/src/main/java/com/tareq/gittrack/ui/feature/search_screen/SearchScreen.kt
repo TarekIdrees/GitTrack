@@ -35,6 +35,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
+import com.tareq.gittrack.ui.common_composables.ConnectionErrorPlaceholder
+import com.tareq.gittrack.ui.common_composables.SearchPlaceholder
 
 @Composable
 fun SearchScreen(
@@ -60,7 +62,13 @@ fun SearchScreen(
 fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
+    SearchPlaceholder(state = state.searchPlaceholderVisibility)
     Loading(state = state.isLoading)
+    ConnectionErrorPlaceholder(state = state, onClickTryAgain = {
+        scope.launch {
+            viewModel.getGithubUsers(state.searchTerm)
+        }
+    })
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -115,6 +123,4 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
             }
         }
     }
-
-
 }
