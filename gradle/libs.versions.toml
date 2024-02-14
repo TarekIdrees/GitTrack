@@ -48,6 +48,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 serilization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serilization" }
 
 sqldelight-driver = { group = "app.cash.sqldelight", name = "jdbc-driver", version.ref = "sqldelight" }
+sqldelight-android-driver = { group = "app.cash.sqldelight", name = "android-driver", version.ref = "sqldelight" }
 sqldelight-runtime = { group = "app.cash.sqldelight", name = "runtime", version.ref = "sqldelight" }
 sqldelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight-coroutines" }
 sqldelight-plugin = { group = "app.cash.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
@@ -77,6 +78,7 @@ compose = [
 ]
 sqldelight = [
     "sqldelight-driver",
+    "sqldelight-android-driver",
     "sqldelight-runtime",
     "sqldelight-coroutines"
 ]

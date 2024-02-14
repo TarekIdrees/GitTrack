@@ -54,7 +54,7 @@ android {
     }
     sqldelight {
         databases {
-            create("GHUsers") {
+            create("GHUsersDatabase") {
                 packageName.set("com.tareq.gittrack")
             }
         }

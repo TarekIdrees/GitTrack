@@ -2,7 +2,7 @@ package com.tareq.gittrack.data.local.github_users
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import com.tareq.gittrack.GHUsers
+import com.tareq.gittrack.GHUsersDatabase
 import gittrack.githubuserdb.GetMatchedGithubUsersByName
 import gittrack.githubuserdb.GithubUserEntity
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 
 class GithubUsersSourceImpl(
-    githubUsersDatabase: GHUsers
+    githubUsersDatabase: GHUsersDatabase
 ) : GithubUsersSource {
 
     private val queries = githubUsersDatabase.githubUsersEntityQueries

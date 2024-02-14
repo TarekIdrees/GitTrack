@@ -1,11 +1,11 @@
 package com.tareq.gittrack.data.local.github_user
 
-import com.tareq.gittrack.GHUsers
+import com.tareq.gittrack.GHUsersDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GithubUserSourceImpl(
-    githubUsersDatabase: GHUsers
+    githubUsersDatabase: GHUsersDatabase
 ) : GithubUserSource {
 
     private val queries = githubUsersDatabase.githubUserEntityQueries
