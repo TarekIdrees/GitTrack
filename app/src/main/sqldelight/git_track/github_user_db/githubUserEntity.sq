@@ -1,0 +1,23 @@
+CREATE TABLE githubUserEntity (
+    github_user_id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    bio TEXT NOT NULL,
+    company TEXT NOT NULL,
+    avatar_url TEXT NOT NULL,
+    created_url TEXT NOT NULL,
+    email TEXT NOT NULL,
+    followers TEXT NOT NULL,
+    following TEXT NOT NULL,
+    location TEXT NOT NULL
+);
+
+getGithubUserById:
+SELECT *
+FROM githubUserEntity
+WHERE github_user_id = :id;
+
+insertGithubUser:
+INSERT OR REPLACE
+INTO githubUserEntity(github_user_id,name,bio,company,avatar_url,created_url,email,followers,following,location)
+VALUES (?,?,?,?,?,?,?,?,?,?);
+

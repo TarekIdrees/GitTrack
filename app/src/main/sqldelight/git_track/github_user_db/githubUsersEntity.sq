@@ -1,0 +1,11 @@
+CREATE TABLE githubUsersEntity (
+    id INTEGER PRIMARY KEY NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES githubUserEntity(github_user_id)
+);
+
+getMatchedGithubUsersByName:
+SELECT *
+FROM githubUsersEntity
+JOIN githubUserEntity ON githubUsersEntity.user_id = githubUserEntity.github_user_id
+WHERE githubUserEntity.name LIKE '%' || :name || '%';
