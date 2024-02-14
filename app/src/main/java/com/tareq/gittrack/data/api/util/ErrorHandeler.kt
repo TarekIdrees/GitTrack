@@ -7,5 +7,4 @@ class InvalidDataException : NetworkException()
 class NotFoundException : NetworkException()
 class InternalServerException : NetworkException()
 class ForbiddenException : NetworkException()
-class UnAuthorizedException : NetworkException()
 //endregion
