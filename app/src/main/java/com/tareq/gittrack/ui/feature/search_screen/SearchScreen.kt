@@ -73,7 +73,7 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(top = 16.dp),
             label = { Text("Search", color = MaterialTheme.colorScheme.onSurface) },
             leadingIcon = {
