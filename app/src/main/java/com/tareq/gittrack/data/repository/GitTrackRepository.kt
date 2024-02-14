@@ -37,9 +37,8 @@ class GitTrackRepositoryImpl @Inject constructor(
                     it.login!!.contains(searchTerm.trim(), ignoreCase = true)
                 }?.map {
                     searchGithubUser(it.login!!)
-                }!!.toList()
-                .let { flows ->
-                    combine(flows) { entities ->
+                }.let { flows ->
+                    combine(flows!!.asIterable()) { entities ->
                         entities.toList()
                     }
                 }
