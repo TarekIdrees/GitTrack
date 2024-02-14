@@ -1,18 +1,17 @@
 package com.tareq.gittrack
 
-import com.tareq.gittrack.data.api.model.GithubGeneralUserInformationResponse
+import com.tareq.gittrack.data.api.mapper.toGithubUser
 import com.tareq.gittrack.data.api.model.GithubSearchResponse
 import com.tareq.gittrack.data.api.model.GithubUserResponse
-import com.tareq.gittrack.data.api.repository.GitTrackRepositoryImpl
+import com.tareq.gittrack.data.repository.GitTrackRepositoryImpl
 import com.tareq.gittrack.data.api.service.GitTrackApiService
 import com.tareq.gittrack.data.api.util.NotFoundException
+import com.tareq.gittrack.domain.model.GithubUser
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-
 import org.junit.Assert.*
 import retrofit2.Response
 
@@ -34,7 +33,7 @@ class GitTrackRepositoryImplTest {
         // Invoking method under test
         val resultFlow = repository.searchGithubUser(user)
         resultFlow.collect { result ->
-            assertTrue(result == response)
+            assertTrue(result == response.toGithubUser())
         }
 
         // Verifying method calls
@@ -48,11 +47,9 @@ class GitTrackRepositoryImplTest {
         // Mock the response from the service which is GithubSearchResponse
         val response = mockk<GithubSearchResponse>()
         // Mock the list of users that should be retrieved form the repository
-        val usersList = mockk<List<GithubGeneralUserInformationResponse>>()
+        val usersList = mockk<List<GithubUser>>()
 
         // Mocking behavior of API service and response
-        every { usersList.iterator() } returns emptyList<GithubGeneralUserInformationResponse>().iterator()
-        every { response.githubUsers } returns usersList
         coEvery { mockApiService.searchGithubUsers(searchTerm) } returns Response.success(response)
 
         // Invoking method under test

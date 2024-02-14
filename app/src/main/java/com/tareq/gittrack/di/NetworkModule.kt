@@ -1,6 +1,6 @@
 package com.tareq.gittrack.di
 
-import com.tareq.gittrack.data.api.interceptors.StatusCodeInterceptor
+import com.tareq.gittrack.data.api.interceptor.StatusCodeInterceptor
 import com.tareq.gittrack.data.api.service.GitTrackApiService
 import dagger.Module
 import dagger.Provides

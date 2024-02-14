@@ -1,39 +1,22 @@
 package com.tareq.gittrack.domain.usecase
 
-import com.tareq.gittrack.data.api.repository.GitTrackRepository
 import com.tareq.gittrack.domain.model.GithubUser
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.tareq.gittrack.domain.repository.GitTrackRepository
+import com.tareq.gittrack.domain.util.handelGithubUserFields
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
 class SearchGithubUsersUseCase @Inject constructor(
-    private val searchGithubUserUseCase: SearchGithubUserUseCase,
     private val gitTrackRepository: GitTrackRepository
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
     suspend operator fun invoke(searchTerm: String): Flow<List<GithubUser>> {
-        return gitTrackRepository.searchGithubUsers(searchTerm)
-            .flatMapConcat { githubUsersGeneralInformation ->
-                githubUsersGeneralInformation
-                    .filterNot {
-                        it.login.isNullOrBlank()
-                    }.filter {
-                        it.login!!.contains(searchTerm.trim(),ignoreCase = true)
-                    }
-                    .sortedBy {
-                        it.followersUrl
-                    }
-                    .map { githubUserGeneralInformation ->
-                        searchGithubUserUseCase(githubUserGeneralInformation.login!!)
-                    }
-                    .toList()
-                    .let { flows ->
-                        combine(flows) { entities ->
-                            entities.toList()
-                        }
-                    }
+        return gitTrackRepository.searchGithubUsers(searchTerm).transform {
+            it.forEach { githubUser ->
+                githubUser.handelGithubUserFields()
             }
+        }
     }
+
+
 }

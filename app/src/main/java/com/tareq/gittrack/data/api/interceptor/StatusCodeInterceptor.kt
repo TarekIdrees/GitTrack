@@ -1,4 +1,4 @@
-package com.tareq.gittrack.data.api.interceptors
+package com.tareq.gittrack.data.api.interceptor
 
 import com.tareq.gittrack.data.api.util.ForbiddenException
 import com.tareq.gittrack.data.api.util.InternalServerException

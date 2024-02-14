@@ -7,7 +7,7 @@ data class GithubSearchResponse(
     @SerializedName("incomplete_results")
     val incompleteResults: Boolean? = null,
     @SerializedName("items")
-    val githubUsers: List<GithubGeneralUserInformationResponse?>? = null,
+    val githubUsers: List<GithubGeneralUserInformationResponse>? = null,
     @SerializedName("total_count")
     val totalCount: Int? = null
 )

@@ -30,7 +30,6 @@ import com.tareq.gittrack.ui.common_composables.ContentVisibility
 import com.tareq.gittrack.ui.common_composables.Loading
 import com.tareq.gittrack.ui.feature.search_screen.composables.GithubUserCard
 import com.tareq.gittrack.ui.theme.Brand
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,10 +53,7 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
         OutlinedTextField(
             value = state.searchTerm,
             onValueChange = {
-                scope.launch {
-                    delay(1000L)
-                    viewModel.getGithubUsers(it)
-                }
+                viewModel.updateSearchTerm(it)
             },
             modifier = Modifier
                 .fillMaxWidth()
