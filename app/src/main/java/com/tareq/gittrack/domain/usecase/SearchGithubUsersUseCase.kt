@@ -1,7 +1,7 @@
 package com.tareq.gittrack.domain.usecase
 
 import com.tareq.gittrack.data.api.repository.GitTrackRepository
-import com.tareq.gittrack.domain.model.GithubUserEntity
+import com.tareq.gittrack.domain.model.GithubUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -13,7 +13,7 @@ class SearchGithubUsersUseCase @Inject constructor(
     private val gitTrackRepository: GitTrackRepository
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend operator fun invoke(searchTerm: String): Flow<List<GithubUserEntity>> {
+    suspend operator fun invoke(searchTerm: String): Flow<List<GithubUser>> {
         return gitTrackRepository.searchGithubUsers(searchTerm)
             .flatMapConcat { githubUsersGeneralInformation ->
                 githubUsersGeneralInformation

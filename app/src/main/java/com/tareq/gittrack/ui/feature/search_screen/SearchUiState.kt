@@ -1,6 +1,6 @@
 package com.tareq.gittrack.ui.feature.search_screen
 
-import com.tareq.gittrack.domain.model.GithubUserEntity
+import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.util.ErrorHandler
 
 
@@ -25,7 +25,7 @@ data class GithubUserUi(
 )
 
 fun SearchUiState.screenContentVisibility() = !this.isLoading && !this.isError
-fun GithubUserEntity.toGithubUserUi(): GithubUserUi {
+fun GithubUser.toGithubUserUi(): GithubUserUi {
     return GithubUserUi(
         name = name,
         bio = bio,

@@ -1,7 +1,7 @@
 package com.tareq.gittrack.ui.feature.search_screen
 
 import android.util.Log
-import com.tareq.gittrack.domain.model.GithubUserEntity
+import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.usecase.SearchGithubUserUseCase
 import com.tareq.gittrack.domain.usecase.SearchGithubUsersUseCase
 import com.tareq.gittrack.domain.util.ErrorHandler
@@ -37,7 +37,7 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    private fun onGetGithubUsersSuccess(githubUsers: List<GithubUserEntity>) {
+    private fun onGetGithubUsersSuccess(githubUsers: List<GithubUser>) {
         _state.update {
             it.copy(
                 isLoading = false,

@@ -2,7 +2,7 @@ package com.tareq.gittrack.domain.usecase
 
 import com.tareq.gittrack.data.api.model.GithubUserResponse
 import com.tareq.gittrack.data.api.repository.GitTrackRepository
-import com.tareq.gittrack.domain.model.GithubUserEntity
+import com.tareq.gittrack.domain.model.GithubUser
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -15,8 +15,8 @@ class SearchGithubUserUseCase @Inject constructor(
         it.toGithubUserEntity()
     }
 
-    private fun GithubUserResponse.toGithubUserEntity(): GithubUserEntity {
-        return GithubUserEntity(
+    private fun GithubUserResponse.toGithubUserEntity(): GithubUser {
+        return GithubUser(
             name = login ?: "Undefined",
             bio = bio ?: "Undefined",
             company = company ?: "Undefined",

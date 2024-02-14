@@ -1,6 +1,6 @@
 package com.tareq.gittrack.domain.model
 
-data class GithubUserEntity(
+data class GithubUser(
     val name: String = "",
     val bio: String = "",
     val company: String = "",
