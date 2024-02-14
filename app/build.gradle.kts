@@ -100,4 +100,6 @@ dependencies {
     implementation(libs.lottie)
 
     implementation(libs.coil)
+
+    implementation(libs.splash)
 }
