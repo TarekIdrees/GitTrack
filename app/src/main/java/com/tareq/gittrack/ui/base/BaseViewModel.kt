@@ -40,30 +40,25 @@ abstract class BaseViewModel<S, E>(initialState: S) : ViewModel() {
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) {
         viewModelScope.launch(dispatcher) {
-            handleException(
-                onError
-            ) {
+            try {
                 function().collect { result ->
                     onSuccess(result)
                 }
+            } catch (exception: Exception) {
+                handleException(exception, onError)
             }
         }
     }
 
-    private suspend fun <T> handleException(
+    private fun handleException(
+        exception: java.lang.Exception,
         onError: (t: ErrorHandler) -> Unit,
-        action: suspend () -> T
     ) {
-        try {
-            action()
-        } catch (exception: Exception) {
-            when (exception) {
-                is UserException -> handelUserException(exception, onError)
-                is NetworkException -> handelNetworkException(exception, onError)
-                is IOException -> onError(ErrorHandler.NoConnection)
-                else -> onError(ErrorHandler.InvalidData)
-            }
+        when (exception) {
+            is UserException -> handelUserException(exception, onError)
+            is NetworkException -> handelNetworkException(exception, onError)
+            is IOException -> onError(ErrorHandler.NoConnection)
+            else -> onError(ErrorHandler.InvalidData)
         }
     }
-
 }

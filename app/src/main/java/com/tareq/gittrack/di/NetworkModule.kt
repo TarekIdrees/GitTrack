@@ -1,6 +1,6 @@
 package com.tareq.gittrack.di
 
-import com.tareq.gittrack.data.api.interceptor.StatusCodeInterceptor
+
 import com.tareq.gittrack.data.api.service.GitTrackApiService
 import dagger.Module
 import dagger.Provides
@@ -20,7 +20,6 @@ internal object NetworkModule {
     fun provideOkhttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addNetworkInterceptor(HttpLoggingInterceptor())
-            .addInterceptor(StatusCodeInterceptor())
             .build()
     }
 

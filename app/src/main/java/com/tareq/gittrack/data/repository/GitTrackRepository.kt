@@ -2,10 +2,15 @@ package com.tareq.gittrack.data.repository
 
 
 import com.tareq.gittrack.data.api.mapper.toGithubUser
+import com.tareq.gittrack.data.api.model.GithubSearchResponse
 import com.tareq.gittrack.data.api.service.GitTrackApiService
-import com.tareq.gittrack.data.api.util.NotFoundException
 import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.repository.GitTrackRepository
+import com.tareq.gittrack.domain.util.ForbiddenException
+import com.tareq.gittrack.domain.util.InternalServerException
+import com.tareq.gittrack.domain.util.InvalidDataException
+import com.tareq.gittrack.domain.util.NoConnectionException
+import com.tareq.gittrack.domain.util.NotFoundException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -49,7 +54,24 @@ class GitTrackRepositoryImpl @Inject constructor(
     private suspend fun <T> wrap(function: Response<T>): Flow<T> {
         return flow {
             if (function.isSuccessful) {
+                val body = function.body()
+                if (body is GithubSearchResponse) {
+                    if (body.totalCount == 0) {
+                        throw NotFoundException()
+                    }
+                }
                 function.body()?.let { emit(it) } ?: throw NotFoundException()
+            } else {
+                when (function.code()) {
+                    502 -> throw NoConnectionException()
+                    400 -> throw InvalidDataException()
+                    403 -> throw ForbiddenException()
+                    404 -> throw NotFoundException()
+                    500 -> throw InternalServerException()
+                    else -> {
+                        throw Exception()
+                    }
+                }
             }
         }
     }
