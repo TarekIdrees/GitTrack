@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
 import com.tareq.gittrack.ui.common_composables.ConnectionErrorPlaceholder
+import com.tareq.gittrack.ui.common_composables.EmptySearchResultPlaceholder
 import com.tareq.gittrack.ui.common_composables.SearchPlaceholder
 
 @Composable
@@ -63,6 +64,7 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
     SearchPlaceholder(state = state.searchPlaceholderVisibility)
+    EmptySearchResultPlaceholder(state = state.isEmptySearchResult)
     Loading(state = state.isLoading)
     ConnectionErrorPlaceholder(state = state, onClickTryAgain = {
         scope.launch {

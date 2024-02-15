@@ -23,11 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tareq.gittrack.R
-import com.tareq.gittrack.ui.feature.search_screen.SearchUiState
 import com.tareq.gittrack.ui.theme.GitTrackTheme
 
 @Composable
-fun SearchPlaceholder(state: Boolean) {
+fun EmptySearchResultPlaceholder(state: Boolean) {
     AnimatedVisibility(
         visible = state,
         enter = fadeIn(
@@ -45,8 +44,8 @@ fun SearchPlaceholder(state: Boolean) {
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.search_placeholder),
-                contentDescription = "search placeholder",
+                painter = painterResource(id = R.drawable.empty_search_placeholder),
+                contentDescription = "empty search result placeholder",
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -54,7 +53,7 @@ fun SearchPlaceholder(state: Boolean) {
             )
             Text(
                 modifier = Modifier.padding(bottom = 16.dp),
-                text = "Search by GitHub username to retrieve a list of matched users",
+                text = "There are no GitHub users with this name",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
@@ -65,10 +64,8 @@ fun SearchPlaceholder(state: Boolean) {
 
 @Preview
 @Composable
-fun SearchPlaceholderPreview() {
+fun EmptySearchResultPlaceholderPrev() {
     GitTrackTheme {
-        ConnectionErrorPlaceholder(state = SearchUiState(isError = true)) {
-
-        }
+        EmptySearchResultPlaceholder(state = true)
     }
 }

@@ -9,6 +9,7 @@ data class SearchUiState(
     val isError: Boolean = false,
     val error: ErrorHandler? = null,
     val searchPlaceholderVisibility: Boolean = true,
+    val isEmptySearchResult: Boolean = false,
     val searchTerm: String = "",
     val githubUsers: List<GithubUserUi> = emptyList(),
     val toast: Toast = Toast()

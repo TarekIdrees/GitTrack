@@ -22,7 +22,8 @@ class SearchViewModel @Inject constructor(
                     isLoading = true,
                     isError = false,
                     error = null,
-                    searchPlaceholderVisibility = false
+                    searchPlaceholderVisibility = false,
+                    isEmptySearchResult = false
                 )
             }
             tryToExecute(
@@ -44,7 +45,6 @@ class SearchViewModel @Inject constructor(
                 }
             )
         }
-
     }
 
     private fun onGetGithubUsersError(error: ErrorHandler) {
@@ -55,7 +55,10 @@ class SearchViewModel @Inject constructor(
             ErrorHandler.InvalidData -> showToast("please search by valid github users name")
             ErrorHandler.InvalidInput -> showToast("please search by valid github users name")
             ErrorHandler.NoConnection -> showToast("no network connection")
-            ErrorHandler.NotFound -> showToast("users not found")
+            ErrorHandler.NotFound -> {
+                _state.update { it.copy(isError = false, isEmptySearchResult = true) }
+                showToast("users not found")
+            }
         }
     }
 
