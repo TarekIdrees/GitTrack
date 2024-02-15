@@ -59,6 +59,10 @@ class SearchViewModel @Inject constructor(
                 _state.update { it.copy(isError = false, isEmptySearchResult = true) }
                 showToast("users not found")
             }
+
+            else -> {
+                showToast("connection error occurred")
+            }
         }
     }
 
@@ -77,5 +81,13 @@ class SearchViewModel @Inject constructor(
             )
         }
         effectActionExecutor(_effect, SearchUiEffect.ShowToastEffect)
+    }
+
+    fun openCardInBrowser(url: String) {
+        if (url == "Undefined") {
+            showToast("Undefined user link")
+        } else {
+            effectActionExecutor(_effect, SearchUiEffect.OpenCardInBrowser(url))
+        }
     }
 }

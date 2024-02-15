@@ -13,6 +13,7 @@ fun GithubUserResponse.toGithubUser(): GithubUser {
         email = email?.toString() ?: "",
         followers = followers?.toString() ?: "",
         following = following?.toString() ?: "",
-        location = location ?: ""
+        location = location ?: "",
+        link = if (login.isNullOrBlank()) "" else "https://github.com/$login"
     )
 }

@@ -1,5 +1,6 @@
 package com.tareq.gittrack.ui.feature.search_screen.composables
 
+
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,7 +38,8 @@ import com.tareq.gittrack.ui.theme.GitTrackTheme
 @Composable
 fun GithubUserCard(
     modifier: Modifier = Modifier,
-    githubUser: GithubUserUi
+    githubUser: GithubUserUi,
+    onClickCard: (String) -> Unit,
 ) {
     var showFullCard by remember {
         mutableStateOf(false)
@@ -47,7 +49,9 @@ fun GithubUserCard(
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.surface)
             .animateContentSize(),
-        onClick = { /*TODO*/ }
+        onClick = {
+          onClickCard(githubUser.link)
+        }
     ) {
         Box(
             modifier = Modifier
@@ -226,8 +230,10 @@ fun GithubUserCardPreview() {
                 createdAt = "2019-5-29",
                 location = "Nederland",
                 following = "100",
-                followers = "100"
-            )
+                followers = "100",
+                link =  "https://github.com/TarekIdrees"
+            ),
+            onClickCard = {}
         )
     }
 

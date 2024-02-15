@@ -12,6 +12,7 @@ fun GithubUser.handelGithubUserFields(): GithubUser {
         email = email.ifBlank { "Undefined" },
         followers = followers.ifBlank { "Undefined" },
         following = following.ifBlank { "Undefined" },
-        location = location.ifBlank { "Undefined" }
+        location = location.ifBlank { "Undefined" },
+        link = if (name == "Undefined") "" else "https://github.com/$name"
     )
 }

@@ -1,5 +1,7 @@
 package com.tareq.gittrack.ui.feature.search_screen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -53,11 +55,17 @@ fun SearchScreen(
                     state.toast.message,
                     Toast.LENGTH_SHORT
                 ).show()
+
+                is SearchUiEffect.OpenCardInBrowser -> {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
+                    context.startActivity(intent)
+                }
             }
         }
     }
     SearchContent(viewModel = viewModel, state = state)
 }
+
 
 @Composable
 fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
@@ -119,7 +127,10 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
             ) {
                 state.githubUsers.forEach { githubUser ->
                     item {
-                        GithubUserCard(githubUser = githubUser)
+                        GithubUserCard(
+                            githubUser = githubUser,
+                            onClickCard = { viewModel.openCardInBrowser(githubUser.link) }
+                        )
                     }
                 }
             }

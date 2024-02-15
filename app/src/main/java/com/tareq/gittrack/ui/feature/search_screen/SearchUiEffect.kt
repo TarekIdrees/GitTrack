@@ -4,4 +4,5 @@ import com.tareq.gittrack.ui.base.BaseUiEffect
 
 sealed class SearchUiEffect : BaseUiEffect {
     object ShowToastEffect : SearchUiEffect()
+    data class OpenCardInBrowser(val url: String) : SearchUiEffect()
 }

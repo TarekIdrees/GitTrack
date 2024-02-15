@@ -10,4 +10,5 @@ data class GithubUser(
     val followers: String,
     val following: String,
     val location: String,
+    val link: String,
 )

@@ -30,6 +30,7 @@ data class GithubUserUi(
     val followers: String = "",
     val following: String = "",
     val location: String = "",
+    val link: String = ""
 )
 
 fun SearchUiState.screenContentVisibility() = !this.isLoading && !this.isError
@@ -43,6 +44,7 @@ fun GithubUser.toGithubUserUi(): GithubUserUi {
         email = email,
         followers = followers,
         following = following,
-        location = location
+        location = location,
+        link = link
     )
 }
