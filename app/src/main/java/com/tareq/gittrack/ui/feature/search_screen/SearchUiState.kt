@@ -12,7 +12,8 @@ data class SearchUiState(
     val isEmptySearchResult: Boolean = false,
     val searchTerm: String = "",
     val githubUsers: List<GithubUserUi> = emptyList(),
-    val toast: Toast = Toast()
+    val toast: Toast = Toast(),
+    val screenContentVisibility: Boolean = false,
 )
 
 data class Toast(
@@ -33,7 +34,6 @@ data class GithubUserUi(
     val link: String = ""
 )
 
-fun SearchUiState.screenContentVisibility() = !this.isLoading && !this.isError
 fun GithubUser.toGithubUserUi(): GithubUserUi {
     return GithubUserUi(
         name = name,

@@ -42,26 +42,32 @@ class SearchViewModel @Inject constructor(
                 error = null,
                 githubUsers = githubUsers.map { githubUser ->
                     githubUser.toGithubUserUi()
-                }
+                },
+                screenContentVisibility = true
             )
         }
     }
 
     private fun onGetGithubUsersError(error: ErrorHandler) {
-        _state.update { it.copy(isLoading = false, isError = true, error = error) }
+        _state.update {
+            it.copy(
+                isLoading = false,
+                isError = true,
+                error = error,
+                screenContentVisibility = false
+            )
+        }
         when (error) {
             ErrorHandler.Forbidden -> showToast("Exceed the limit of search wait 1 hour please")
             ErrorHandler.InternalServer -> showToast("Server has a problem")
             ErrorHandler.InvalidData -> showToast("please search by valid github users name")
             ErrorHandler.InvalidInput -> showToast("please search by valid github users name")
-            ErrorHandler.NoConnection -> showToast("no network connection")
+            ErrorHandler.NoConnection -> {
+                showToast("no network connection")
+            }
             ErrorHandler.NotFound -> {
                 _state.update { it.copy(isError = false, isEmptySearchResult = true) }
                 showToast("users not found")
-            }
-
-            else -> {
-                showToast("connection error occurred")
             }
         }
     }

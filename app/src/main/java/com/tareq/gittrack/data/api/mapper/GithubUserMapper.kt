@@ -5,6 +5,7 @@ import com.tareq.gittrack.domain.model.GithubUser
 
 fun GithubUserResponse.toGithubUser(): GithubUser {
     return GithubUser(
+        id = id?.toString() ?: "0",
         name = login ?: "",
         bio = bio ?: "",
         company = company ?: "",

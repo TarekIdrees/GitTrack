@@ -4,6 +4,7 @@ import com.tareq.gittrack.domain.model.GithubUser
 
 fun GithubUser.handelGithubUserFields(): GithubUser {
     return GithubUser(
+        id = id.ifBlank { "0" },
         name = name.ifBlank { "Undefined" },
         bio = bio.ifBlank { "Undefined" },
         company = company.ifBlank { "Undefined" },

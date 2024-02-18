@@ -8,7 +8,8 @@ CREATE TABLE githubUserEntity (
     email TEXT NOT NULL,
     followers TEXT NOT NULL,
     following TEXT NOT NULL,
-    location TEXT NOT NULL
+    location TEXT NOT NULL,
+    url TEXT NOT NULL
 );
 
 getGithubUserById:
@@ -17,7 +18,12 @@ FROM githubUserEntity
 WHERE github_user_id = :id;
 
 insertGithubUser:
-INSERT OR REPLACE
-INTO githubUserEntity(github_user_id,name,bio,company,avatar_url,created_url,email,followers,following,location)
-VALUES (?,?,?,?,?,?,?,?,?,?);
+INSERT OR IGNORE
+INTO githubUserEntity(github_user_id,name,bio,company,avatar_url,created_url,email,followers,following,location,url)
+VALUES (?,?,?,?,?,?,?,?,?,?,?);
+
+getMatchedGithubUsersByName:
+SELECT *
+FROM githubUserEntity
+WHERE githubUserEntity.name LIKE '%' || :name || '%';
 

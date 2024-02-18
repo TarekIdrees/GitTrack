@@ -2,8 +2,10 @@ package com.tareq.gittrack.data.repository
 
 
 import com.tareq.gittrack.data.api.mapper.toGithubUser
-import com.tareq.gittrack.data.api.model.GithubSearchResponse
 import com.tareq.gittrack.data.api.service.GitTrackApiService
+import com.tareq.gittrack.data.local.github_user.GithubUserSourceImpl
+import com.tareq.gittrack.data.local.toGithubUser
+import com.tareq.gittrack.data.local.toGithubUserEntity
 import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.repository.GitTrackRepository
 import com.tareq.gittrack.domain.util.ForbiddenException
@@ -11,56 +13,73 @@ import com.tareq.gittrack.domain.util.InternalServerException
 import com.tareq.gittrack.domain.util.InvalidDataException
 import com.tareq.gittrack.domain.util.NoConnectionException
 import com.tareq.gittrack.domain.util.NotFoundException
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
 import retrofit2.Response
 import javax.inject.Inject
 
 
 class GitTrackRepositoryImpl @Inject constructor(
-    private val gitTrackApiService: GitTrackApiService
+    private val gitTrackApiService: GitTrackApiService,
+    private val githubUserSourceImpl: GithubUserSourceImpl,
 ) : GitTrackRepository {
+
     override suspend fun searchGithubUser(
         user: String
-    ): Flow<GithubUser> =
-        wrap(gitTrackApiService.searchGithubUser(user)).map {
-            it.toGithubUser()
-        }
+    ): Flow<GithubUser> {
+        val githubUser = wrap(gitTrackApiService.searchGithubUser(user)).toGithubUser()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun searchGithubUsers(searchTerm: String)
-            : Flow<List<GithubUser>> {
-        return wrap(gitTrackApiService.searchGithubUsers(searchTerm)).flatMapConcat { githubUsersGeneralInformation ->
-            githubUsersGeneralInformation.githubUsers
-                ?.filterNot {
-                    it.login.isNullOrBlank()
-                }?.filter {
-                    it.login!!.contains(searchTerm.trim(), ignoreCase = true)
-                }?.map {
-                    searchGithubUser(it.login!!)
-                }.let { flows ->
-                    combine(flows!!.asIterable()) { entities ->
-                        entities.toList()
+        insertGithubUserInDatabase(githubUser)
+
+        return flow { emit(githubUser) }
+    }
+
+
+    override suspend fun searchGithubUsers(searchTerm: String): Flow<List<GithubUser>> {
+        val users = mutableListOf<GithubUser>()
+        return try {
+            wrap(gitTrackApiService.searchGithubUsers(searchTerm)).githubUsers
+                ?.apply {
+                    if (this.isEmpty()) throw NotFoundException()
+                }!!.forEach {
+                    it.login.takeUnless { login ->
+                        login.isNullOrBlank()
+                    }.also { login ->
+                        searchGithubUser(login!!).first { githubUser ->
+                            users.add(githubUser)
+                        }
                     }
                 }
+            flow { emit(users) }
+        } catch (e: Exception) {
+            getMatchedGithubUsersFromDatabase(searchTerm)
         }
     }
 
 
-    private suspend fun <T> wrap(function: Response<T>): Flow<T> {
-        return flow {
-            if (function.isSuccessful) {
-                val body = function.body()
-                if (body is GithubSearchResponse) {
-                    if (body.totalCount == 0) {
-                        throw NotFoundException()
-                    }
+    override suspend fun insertGithubUserInDatabase(user: GithubUser) {
+        githubUserSourceImpl.insertGithubUser(user.toGithubUserEntity())
+    }
+
+    override suspend fun getMatchedGithubUsersFromDatabase(userName: String): Flow<List<GithubUser>> {
+        return githubUserSourceImpl.getMatchedUsersByName(userName)
+            .onEmpty {
+                throw NotFoundException()
+            }.map {
+                it.map { githubUserEntity ->
+                    githubUserEntity.toGithubUser()
                 }
-                function.body()?.let { emit(it) } ?: throw NotFoundException()
+            }
+    }
+
+
+    private fun <T> wrap(function: Response<T>): T {
+        return try {
+            if (function.isSuccessful) {
+                function.body() ?: throw NotFoundException()
             } else {
                 when (function.code()) {
                     502 -> throw NoConnectionException()
@@ -68,10 +87,17 @@ class GitTrackRepositoryImpl @Inject constructor(
                     403 -> throw ForbiddenException()
                     404 -> throw NotFoundException()
                     500 -> throw InternalServerException()
-                    else -> {
-                        throw Exception()
-                    }
+                    else -> throw Exception()
                 }
+            }
+        } catch (e: Exception) {
+            when (function.code()) {
+                502 -> throw NoConnectionException()
+                400 -> throw InvalidDataException()
+                403 -> throw ForbiddenException()
+                404 -> throw NotFoundException()
+                500 -> throw InternalServerException()
+                else -> throw Exception()
             }
         }
     }

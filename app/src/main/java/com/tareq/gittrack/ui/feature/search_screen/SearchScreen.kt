@@ -120,7 +120,7 @@ fun SearchContent(viewModel: SearchViewModel, state: SearchUiState) {
                 focusedIndicatorColor = Brand
             ),
         )
-        ContentVisibility(state = state.screenContentVisibility()) {
+        ContentVisibility(state = state.screenContentVisibility) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(vertical = 16.dp)
