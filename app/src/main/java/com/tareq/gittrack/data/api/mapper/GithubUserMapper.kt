@@ -6,7 +6,7 @@ import com.tareq.gittrack.domain.model.GithubUser
 fun GithubUserResponse.toGithubUser(): GithubUser {
     return GithubUser(
         id = id?.toString() ?: "0",
-        name = login ?: "",
+        userName = userName ?: "",
         bio = bio ?: "",
         company = company ?: "",
         avatarUrl = avatarUrl ?: "",
@@ -15,6 +15,6 @@ fun GithubUserResponse.toGithubUser(): GithubUser {
         followers = followers?.toString() ?: "",
         following = following?.toString() ?: "",
         location = location ?: "",
-        link = if (login.isNullOrBlank()) "" else "https://github.com/$login"
+        link = if (userName.isNullOrBlank()) "" else "https://github.com/$userName"
     )
 }

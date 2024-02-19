@@ -6,7 +6,7 @@ import gittrack.githubuserdb.GithubUserEntity
 fun GithubUser.toGithubUserEntity(): GithubUserEntity {
     return GithubUserEntity(
         github_user_id = id.toLong(),
-        name = name,
+        name = userName,
         bio = bio,
         company = company,
         avatar_url = avatarUrl,
@@ -22,7 +22,7 @@ fun GithubUser.toGithubUserEntity(): GithubUserEntity {
 fun GithubUserEntity.toGithubUser(): GithubUser {
     return GithubUser(
         id = github_user_id.toString(),
-        name = name,
+        userName = name,
         bio = bio,
         company = company,
         avatarUrl = avatar_url,

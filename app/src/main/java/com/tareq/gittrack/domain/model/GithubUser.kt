@@ -2,7 +2,7 @@ package com.tareq.gittrack.domain.model
 
 data class GithubUser(
     val id: String,
-    val name: String,
+    val userName: String,
     val bio: String,
     val company: String,
     val avatarUrl: String,

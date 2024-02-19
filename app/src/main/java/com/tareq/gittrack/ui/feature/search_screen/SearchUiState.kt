@@ -36,7 +36,7 @@ data class GithubUserUi(
 
 fun GithubUser.toGithubUserUi(): GithubUserUi {
     return GithubUserUi(
-        name = name,
+        name = userName,
         bio = bio,
         company = company,
         avatarUrl = avatarUrl,

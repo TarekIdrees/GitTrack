@@ -8,7 +8,6 @@ import com.tareq.gittrack.data.local.toGithubUser
 import com.tareq.gittrack.data.local.toGithubUserEntity
 import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.repository.GitTrackRepository
-import com.tareq.gittrack.domain.util.ForbiddenAndNotFoundOffline
 import com.tareq.gittrack.domain.util.ForbiddenException
 import com.tareq.gittrack.domain.util.InternalServerException
 import com.tareq.gittrack.domain.util.InvalidDataException
@@ -42,29 +41,19 @@ class GitTrackRepositoryImpl @Inject constructor(
 
     override suspend fun searchGithubUsers(searchTerm: String): Flow<List<GithubUser>> {
         val users = mutableListOf<GithubUser>()
-        return try {
-            wrap(gitTrackApiService.searchGithubUsers(searchTerm)).githubUsers
-                ?.apply {
-                    if (this.isEmpty()) throw NotFoundException()
-                }!!.forEach {
-                    it.login.takeUnless { login ->
-                        login.isNullOrBlank()
-                    }.also { login ->
-                        searchGithubUser(login!!).first { githubUser ->
-                            users.add(githubUser)
-                        }
+        wrap(gitTrackApiService.searchGithubUsers(searchTerm)).githubUsers
+            ?.apply {
+                if (this.isEmpty()) throw NotFoundException()
+            }!!.forEach {
+                it.login.takeUnless { login ->
+                    login.isNullOrBlank()
+                }.also { login ->
+                    searchGithubUser(login!!).first { githubUser ->
+                        users.add(githubUser)
                     }
                 }
-            flow { emit(users) }
-        } catch (e: Exception) {
-            getMatchedGithubUsersFromDatabase(searchTerm).onEmpty {
-                if (e is ForbiddenException) {
-                    throw ForbiddenAndNotFoundOffline()
-                } else {
-                    throw NotFoundOfflineException()
-                }
             }
-        }
+        return flow { emit(users) }
     }
 
 
@@ -73,11 +62,13 @@ class GitTrackRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMatchedGithubUsersFromDatabase(userName: String): Flow<List<GithubUser>> {
-        return githubUserSourceImpl.getMatchedUsersByName(userName).map {
-            it.map { githubUserEntity ->
-                githubUserEntity.toGithubUser()
+        return githubUserSourceImpl.getMatchedUsersByName(userName)
+            .onEmpty { throw NotFoundOfflineException() }
+            .map {
+                it.map { githubUserEntity ->
+                    githubUserEntity.toGithubUser()
+                }
             }
-        }
     }
 
 

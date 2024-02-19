@@ -1,40 +1,35 @@
 package com.tareq.gittrack.ui.feature.search_screen
 
+import androidx.lifecycle.viewModelScope
 import com.tareq.gittrack.domain.model.GithubUser
-import com.tareq.gittrack.domain.usecase.SearchGithubUsersUseCase
+import com.tareq.gittrack.domain.usecase.SearchGithubUsersOfflineUseCase
+import com.tareq.gittrack.domain.usecase.SearchGithubUsersOnlineUseCase
+import com.tareq.gittrack.domain.util.DatabaseErrorHandler
 import com.tareq.gittrack.domain.util.ErrorHandler
+import com.tareq.gittrack.domain.util.NetworkErrorHandler
 import com.tareq.gittrack.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchGithubUsersUseCase: SearchGithubUsersUseCase
+    private val searchGithubUsersOnlineUseCase: SearchGithubUsersOnlineUseCase,
+    private val searchGithubUsersOfflineUseCase: SearchGithubUsersOfflineUseCase
 ) : BaseViewModel<SearchUiState, SearchUiEffect>(SearchUiState()) {
 
-    suspend fun getGithubUsers(searchTerm: String) {
-        if (searchTerm.isBlank()) {
-            showToast("Search term should not be empty!")
-        } else {
-            _state.update {
-                it.copy(
-                    isLoading = true,
-                    isError = false,
-                    error = null,
-                    searchPlaceholderVisibility = false,
-                    isEmptySearchResult = false
-                )
-            }
-            tryToExecute(
-                { searchGithubUsersUseCase(searchTerm) },
-                ::onGetGithubUsersSuccess,
-                ::onGetGithubUsersError
-            )
-        }
+
+    //region offline
+    private suspend fun getGithubUsersOffline(searchTerm: String) {
+        tryToExecute(
+            { searchGithubUsersOfflineUseCase(searchTerm) },
+            ::onGetGithubUsersOfflineSuccess,
+            ::onGetGithubUsersOfflineError
+        )
     }
 
-    private fun onGetGithubUsersSuccess(githubUsers: List<GithubUser>) {
+    private fun onGetGithubUsersOfflineSuccess(githubUsers: List<GithubUser>) {
         _state.update {
             it.copy(
                 isLoading = false,
@@ -48,7 +43,59 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun onGetGithubUsersError(error: ErrorHandler) {
+    private fun onGetGithubUsersOfflineError(error: ErrorHandler) {
+        _state.update { it.copy(isError = false, isEmptySearchResult = true) }
+        when (error as DatabaseErrorHandler) {
+            DatabaseErrorHandler.ForbiddenAndNotFound -> {
+                showToast(" mo matched users offline and you exceed the limit of search wait 1 hour please")
+            }
+
+            DatabaseErrorHandler.NotFoundOffline -> {
+                showToast("no matched users offline check your network and try again")
+            }
+        }
+    }
+    //endregion
+
+    //region online
+    suspend fun getGithubUsers(searchTerm: String) {
+        if (searchTerm.isBlank()) {
+            showToast("Search term should not be empty!")
+        } else {
+            _state.update {
+                it.copy(
+                    isLoading = true,
+                    isError = false,
+                    error = null,
+                    searchTerm = searchTerm,
+                    searchPlaceholderVisibility = false,
+                    screenContentVisibility = false,
+                    isEmptySearchResult = false
+                )
+            }
+            tryToExecute(
+                { searchGithubUsersOnlineUseCase(searchTerm) },
+                ::onGetGithubUsersOnlineSuccess,
+                ::onGetGithubUsersOnlineError
+            )
+        }
+    }
+
+    private fun onGetGithubUsersOnlineSuccess(githubUsers: List<GithubUser>) {
+        _state.update {
+            it.copy(
+                isLoading = false,
+                isError = false,
+                error = null,
+                githubUsers = githubUsers.map { githubUser ->
+                    githubUser.toGithubUserUi()
+                },
+                screenContentVisibility = true
+            )
+        }
+    }
+
+    private fun onGetGithubUsersOnlineError(error: ErrorHandler) {
         _state.update {
             it.copy(
                 isLoading = false,
@@ -57,31 +104,30 @@ class SearchViewModel @Inject constructor(
                 screenContentVisibility = false
             )
         }
-        when (error) {
-            ErrorHandler.Forbidden -> showToast("Exceed the limit of search wait 1 hour please")
-            ErrorHandler.InternalServer -> showToast("Server has a problem")
-            ErrorHandler.InvalidData -> showToast("please search by valid github users name")
-            ErrorHandler.InvalidInput -> showToast("please search by valid github users name")
-            ErrorHandler.NoConnection -> {
-                showToast("no network connection")
+        when (error as NetworkErrorHandler) {
+            NetworkErrorHandler.Forbidden -> {
+                showToast("Exceed the limit of search wait 1 hour please searching offline ....")
+                viewModelScope.launch {
+                    getGithubUsersOffline(state.value.searchTerm)
+                }
             }
 
-            ErrorHandler.NotFound -> {
+            NetworkErrorHandler.InternalServer -> showToast("Server has a problem")
+            NetworkErrorHandler.InvalidData -> showToast("please search by valid github users name")
+            NetworkErrorHandler.NoConnection -> {
+                showToast("no network connection searching offline......")
+                viewModelScope.launch {
+                    getGithubUsersOffline(state.value.searchTerm)
+                }
+            }
+
+            NetworkErrorHandler.NotFound -> {
                 _state.update { it.copy(isError = false, isEmptySearchResult = true) }
                 showToast("users not found")
             }
-
-            ErrorHandler.ForbiddenAndNotFound -> {
-                _state.update { it.copy(isError = false, isEmptySearchResult = true) }
-                showToast(" mo matched users offline and you exceed the limit of search wait 1 hour please")
-            }
-
-            ErrorHandler.NotFoundOffline -> {
-                _state.update { it.copy(isError = false, isEmptySearchResult = true) }
-                showToast("no matched users offline check your network and try again")
-            }
         }
     }
+    //endregion
 
     fun updateSearchTerm(searchTerm: String) {
         _state.update { it.copy(searchTerm = searchTerm) }

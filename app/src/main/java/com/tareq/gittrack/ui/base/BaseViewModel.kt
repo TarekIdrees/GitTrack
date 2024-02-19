@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tareq.gittrack.domain.util.DatabaseException
 import com.tareq.gittrack.domain.util.ErrorHandler
+import com.tareq.gittrack.domain.util.NetworkErrorHandler
 import com.tareq.gittrack.domain.util.NetworkException
 import com.tareq.gittrack.domain.util.UserException
 import com.tareq.gittrack.domain.util.handelDatabaseException
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
+
 
 abstract class BaseViewModel<S, E>(initialState: S) : ViewModel() {
     protected val _state = MutableStateFlow(initialState)
@@ -38,7 +40,7 @@ abstract class BaseViewModel<S, E>(initialState: S) : ViewModel() {
     protected fun <T> tryToExecute(
         function: suspend () -> Flow<T>,
         onSuccess: (T) -> Unit,
-        onError: (t: ErrorHandler) -> Unit,
+        onError:  (t: ErrorHandler) -> Unit,
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) {
         viewModelScope.launch(dispatcher) {
@@ -54,14 +56,14 @@ abstract class BaseViewModel<S, E>(initialState: S) : ViewModel() {
 
     private fun handleException(
         exception: java.lang.Exception,
-        onError: (t: ErrorHandler) -> Unit,
+        onError:  (t: ErrorHandler) -> Unit,
     ) {
         when (exception) {
             is UserException -> handelUserException(exception, onError)
             is NetworkException -> handelNetworkException(exception, onError)
             is DatabaseException -> handelDatabaseException(exception, onError)
-            is IOException -> onError(ErrorHandler.NoConnection)
-            else -> onError(ErrorHandler.InvalidData)
+            is IOException -> onError(NetworkErrorHandler.NoConnection)
+            else -> onError(NetworkErrorHandler.NoConnection)
         }
     }
 }

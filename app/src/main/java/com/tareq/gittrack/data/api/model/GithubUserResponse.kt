@@ -39,7 +39,7 @@ data class GithubUserResponse(
     @SerializedName("location")
     val location: String?,
     @SerializedName("login")
-    val login: String?,
+    val userName: String?,
     @SerializedName("name")
     val name: String?,
     @SerializedName("node_id")
