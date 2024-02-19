@@ -2,7 +2,6 @@ package com.tareq.gittrack.ui.feature.search_screen.composables
 
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,10 +27,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.tareq.gittrack.R
 import com.tareq.gittrack.ui.feature.search_screen.GithubUserUi
 import com.tareq.gittrack.ui.theme.GitTrackTheme
 
@@ -50,7 +53,7 @@ fun GithubUserCard(
             .background(MaterialTheme.colorScheme.surface)
             .animateContentSize(),
         onClick = {
-          onClickCard(githubUser.link)
+            onClickCard(githubUser.link)
         }
     ) {
         Box(
@@ -64,11 +67,15 @@ fun GithubUserCard(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1.5f)
+                        .aspectRatio(1f)
                 ) {
-                    Image(
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(githubUser.avatarUrl).crossfade(true)
+                            .build(),
                         modifier = Modifier.fillMaxSize(),
-                        painter = rememberAsyncImagePainter(model = githubUser.avatarUrl),
+                        error = painterResource(id = R.drawable.image_error_placeholder),
+                        placeholder = painterResource(id = R.drawable.image_loading_placeholder),
                         contentDescription = "github user image",
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.TopStart,
@@ -231,7 +238,7 @@ fun GithubUserCardPreview() {
                 location = "Nederland",
                 following = "100",
                 followers = "100",
-                link =  "https://github.com/TarekIdrees"
+                link = "https://github.com/TarekIdrees"
             ),
             onClickCard = {}
         )
