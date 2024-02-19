@@ -65,9 +65,20 @@ class SearchViewModel @Inject constructor(
             ErrorHandler.NoConnection -> {
                 showToast("no network connection")
             }
+
             ErrorHandler.NotFound -> {
                 _state.update { it.copy(isError = false, isEmptySearchResult = true) }
                 showToast("users not found")
+            }
+
+            ErrorHandler.ForbiddenAndNotFound -> {
+                _state.update { it.copy(isError = false, isEmptySearchResult = true) }
+                showToast(" mo matched users offline and you exceed the limit of search wait 1 hour please")
+            }
+
+            ErrorHandler.NotFoundOffline -> {
+                _state.update { it.copy(isError = false, isEmptySearchResult = true) }
+                showToast("no matched users offline check your network and try again")
             }
         }
     }

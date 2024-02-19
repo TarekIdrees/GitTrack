@@ -8,11 +8,13 @@ import com.tareq.gittrack.data.local.toGithubUser
 import com.tareq.gittrack.data.local.toGithubUserEntity
 import com.tareq.gittrack.domain.model.GithubUser
 import com.tareq.gittrack.domain.repository.GitTrackRepository
+import com.tareq.gittrack.domain.util.ForbiddenAndNotFoundOffline
 import com.tareq.gittrack.domain.util.ForbiddenException
 import com.tareq.gittrack.domain.util.InternalServerException
 import com.tareq.gittrack.domain.util.InvalidDataException
 import com.tareq.gittrack.domain.util.NoConnectionException
 import com.tareq.gittrack.domain.util.NotFoundException
+import com.tareq.gittrack.domain.util.NotFoundOfflineException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -55,7 +57,13 @@ class GitTrackRepositoryImpl @Inject constructor(
                 }
             flow { emit(users) }
         } catch (e: Exception) {
-            getMatchedGithubUsersFromDatabase(searchTerm)
+            getMatchedGithubUsersFromDatabase(searchTerm).onEmpty {
+                if (e is ForbiddenException) {
+                    throw ForbiddenAndNotFoundOffline()
+                } else {
+                    throw NotFoundOfflineException()
+                }
+            }
         }
     }
 
@@ -65,14 +73,11 @@ class GitTrackRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMatchedGithubUsersFromDatabase(userName: String): Flow<List<GithubUser>> {
-        return githubUserSourceImpl.getMatchedUsersByName(userName)
-            .onEmpty {
-                throw NotFoundException()
-            }.map {
-                it.map { githubUserEntity ->
-                    githubUserEntity.toGithubUser()
-                }
+        return githubUserSourceImpl.getMatchedUsersByName(userName).map {
+            it.map { githubUserEntity ->
+                githubUserEntity.toGithubUser()
             }
+        }
     }
 
 

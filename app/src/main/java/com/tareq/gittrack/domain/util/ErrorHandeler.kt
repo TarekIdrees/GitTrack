@@ -15,6 +15,11 @@ class InternalServerException : NetworkException()
 class ForbiddenException : NetworkException()
 //endregion
 
+//region Database
+open class DatabaseException : Exception()
+class NotFoundOfflineException : DatabaseException()
+class ForbiddenAndNotFoundOffline : DatabaseException()
+//endregion
 
 sealed interface ErrorHandler {
     //region User
@@ -28,6 +33,21 @@ sealed interface ErrorHandler {
     object InternalServer : ErrorHandler
     object Forbidden : ErrorHandler
     //endregion
+
+    //region database
+    object NotFoundOffline : ErrorHandler
+    object ForbiddenAndNotFound : ErrorHandler
+    //endregion
+}
+
+fun handelDatabaseException(
+    exception: DatabaseException,
+    onError: (t: ErrorHandler) -> Unit,
+) {
+    when (exception) {
+        is NotFoundOfflineException -> onError(ErrorHandler.NotFoundOffline)
+        is ForbiddenAndNotFoundOffline -> onError(ErrorHandler.ForbiddenAndNotFound)
+    }
 }
 
 fun handelUserException(

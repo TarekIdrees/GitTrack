@@ -2,9 +2,11 @@ package com.tareq.gittrack.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tareq.gittrack.domain.util.DatabaseException
 import com.tareq.gittrack.domain.util.ErrorHandler
 import com.tareq.gittrack.domain.util.NetworkException
 import com.tareq.gittrack.domain.util.UserException
+import com.tareq.gittrack.domain.util.handelDatabaseException
 import com.tareq.gittrack.domain.util.handelNetworkException
 import com.tareq.gittrack.domain.util.handelUserException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -57,6 +59,7 @@ abstract class BaseViewModel<S, E>(initialState: S) : ViewModel() {
         when (exception) {
             is UserException -> handelUserException(exception, onError)
             is NetworkException -> handelNetworkException(exception, onError)
+            is DatabaseException -> handelDatabaseException(exception, onError)
             is IOException -> onError(ErrorHandler.NoConnection)
             else -> onError(ErrorHandler.InvalidData)
         }
