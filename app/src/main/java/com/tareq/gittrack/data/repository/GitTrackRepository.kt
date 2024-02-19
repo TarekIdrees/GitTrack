@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEmpty
 import retrofit2.Response
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -80,17 +81,21 @@ class GitTrackRepositoryImpl @Inject constructor(
                     403 -> throw ForbiddenException()
                     404 -> throw NotFoundException()
                     500 -> throw InternalServerException()
-                    else -> throw Exception()
+                    else -> throw UnknownHostException()
                 }
             }
-        } catch (e: Exception) {
+        } catch (error: Exception) {
             when (function.code()) {
                 502 -> throw NoConnectionException()
                 400 -> throw InvalidDataException()
                 403 -> throw ForbiddenException()
                 404 -> throw NotFoundException()
                 500 -> throw InternalServerException()
-                else -> throw Exception()
+                else -> if (error is UnknownHostException) {
+                    throw NotFoundException()
+                } else {
+                    throw error
+                }
             }
         }
     }

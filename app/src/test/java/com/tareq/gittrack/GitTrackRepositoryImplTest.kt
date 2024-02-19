@@ -1,88 +1,127 @@
 package com.tareq.gittrack
 
-import com.tareq.gittrack.data.api.mapper.toGithubUser
+import com.tareq.gittrack.data.GithubUserDataSourceImpl
+import com.tareq.gittrack.data.api.model.GithubGeneralUserInformationResponse
 import com.tareq.gittrack.data.api.model.GithubSearchResponse
 import com.tareq.gittrack.data.api.model.GithubUserResponse
 import com.tareq.gittrack.data.repository.GitTrackRepositoryImpl
 import com.tareq.gittrack.data.api.service.GitTrackApiService
-import com.tareq.gittrack.data.api.util.NotFoundException
+import com.tareq.gittrack.data.local.github_user.GithubUserSourceImpl
 import com.tareq.gittrack.domain.model.GithubUser
+import com.tareq.gittrack.domain.util.NotFoundException
+import gittrack.githubuserdb.GithubUserEntity
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Before
 import retrofit2.Response
 
-class GitTrackRepositoryImplTest {
+
+internal class GitTrackRepositoryImplTest {
 
     private val mockApiService: GitTrackApiService = mockk()
-    private val repository = GitTrackRepositoryImpl(mockApiService)
+    private val mockUserTableMethods: GithubUserSourceImpl = mockk()
+    private val repository = GitTrackRepositoryImpl(
+        githubUserSourceImpl = mockUserTableMethods,
+        gitTrackApiService = mockApiService
+    )
 
-    @Test
-    fun `test searchGithubUser`() = runBlocking {
-        // Test data
-        val user = "tarek"
-        // Mock the response from the service which is GithubUserResponse
-        val response = mockk<GithubUserResponse>()
+    private lateinit var githubUserResponse: GithubUserResponse
+    private lateinit var githubUser: GithubUser
+    private lateinit var githubGeneralUserInformationResponse: GithubGeneralUserInformationResponse
+    private lateinit var githubUserEntity: GithubUserEntity
+    private lateinit var githubUserName: String
 
-        // Mocking behavior of API service
-        coEvery { mockApiService.searchGithubUser(user) } returns Response.success(response)
-
-        // Invoking method under test
-        val resultFlow = repository.searchGithubUser(user)
-        resultFlow.collect { result ->
-            assertTrue(result == response.toGithubUser())
-        }
-
-        // Verifying method calls
-        coVerify { mockApiService.searchGithubUser(user) }
+    @Before
+    fun setup() {
+        githubUserName = GithubUserDataSourceImpl.githubUserName
+        githubUserResponse = GithubUserDataSourceImpl.getGithubUserResponse()
+        githubUser = GithubUserDataSourceImpl.getGithubUser()
+        githubGeneralUserInformationResponse =
+            GithubUserDataSourceImpl.getGithubGeneralUserInformationResponse()
+        githubUserEntity = GithubUserDataSourceImpl.getGithubUserEntity()
     }
 
     @Test
-    fun `test searchGithubUsers`() = runBlocking {
-        // Test data
-        val searchTerm = "tarek"
-        // Mock the response from the service which is GithubSearchResponse
-        val response = mockk<GithubSearchResponse>()
-        // Mock the list of users that should be retrieved form the repository
-        val usersList = mockk<List<GithubUser>>()
+    fun `test searchGithubUser`() = runBlocking {
+        // Mock data
+        val user = githubUserName
 
-        // Mocking behavior of API service and response
-        coEvery { mockApiService.searchGithubUsers(searchTerm) } returns Response.success(response)
+        // Mock the response from the service
+        coEvery { mockApiService.searchGithubUser(user) } returns Response.success(
+            githubUserResponse
+        )
 
-        // Invoking method under test
-        val resultFlow = repository.searchGithubUsers(searchTerm)
-        resultFlow.collect { result ->
-            assertEquals(result, usersList)
+        // Invoke the method under test
+        val resultFlow = repository.searchGithubUser(user)
+
+        // Collect the result
+        val result = mutableListOf<GithubUser>()
+        resultFlow.collect { itemUser ->
+            result.add(itemUser)
         }
 
-        // Verifying method calls
-        coVerify { mockApiService.searchGithubUsers(searchTerm) }
+        // Verify
+        assertEquals(githubUser, result.first())
     }
 
     @Test(expected = NotFoundException::class)
     fun `test searchGithubUser with null response`() = runBlocking {
-        // Test data
-        val user = "tarek"
+        // Mock data
+        val user = "fdghtrhsrsbdffsf"
 
-        // Mocking behavior of API service with null response
+        // Mock the response from the service
         coEvery { mockApiService.searchGithubUser(user) } returns Response.success(null)
 
-        repository.searchGithubUser(user).collect { /* No need to collect anything */ }
+        // Invoke the method under test
+        repository.searchGithubUser(user).collect {/* No need to collect anything */ }
+    }
+
+    @Test
+    fun `test searchGithubUsers`() = runBlocking {
+        // Mock data
+        val user = githubUserName
+        val githubUsers = List(3) { githubUser }
+
+        // Mock the response from the service
+        coEvery { mockApiService.searchGithubUser(user) } returns Response.success(
+            githubUserResponse
+        )
+
+        // Mock the response from the service
+        coEvery { mockApiService.searchGithubUsers(user) } returns Response.success(
+            GithubSearchResponse(
+                githubUsers = List(3) { githubGeneralUserInformationResponse },
+                totalCount = 3,
+                incompleteResults = false,
+            )
+        )
+
+
+        // Invoke the method under test
+        val resultFlow = repository.searchGithubUsers(user)
+
+        // Collect the result
+        var result = mutableListOf<GithubUser>()
+        resultFlow.collect { users ->
+            result = users.toMutableList()
+        }
+
+        // Verify
+        assertEquals(3, result.size)
+        assertEquals(githubUsers, result)
     }
 
     @Test(expected = NotFoundException::class)
     fun `test searchGithubUsers with null response`() = runBlocking {
         // Test data
-        val user = "tarek"
+        val user = "ksdjfnksnfdfls"
 
         // Mocking behavior of API service with null response
         coEvery { mockApiService.searchGithubUsers(user) } returns Response.success(null)
 
-        // Invoking method under test
         repository.searchGithubUsers(user).collect { /* No need to collect anything */ }
     }
-
 }
