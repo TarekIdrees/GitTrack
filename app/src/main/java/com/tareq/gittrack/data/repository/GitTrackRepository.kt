@@ -32,9 +32,6 @@ class GitTrackRepositoryImpl @Inject constructor(
         user: String
     ): Flow<GithubUser> {
         val githubUser = wrap(gitTrackApiService.searchGithubUser(user)).toGithubUser()
-
-        insertGithubUserInDatabase(githubUser)
-
         return flow { emit(githubUser) }
     }
 
