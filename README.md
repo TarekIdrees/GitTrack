@@ -14,6 +14,7 @@
 - [Unit Testing](https://developer.android.com/training/testing/local-tests)
 - [Retroft](https://square.github.io/retrofit/)
 - [Coil](https://coil-kt.github.io/coil/)
+- [Sqldelight](https://cashapp.github.io/sqldelight/2.0.0-alpha05/)
 - [Lottie](https://github.com/airbnb/lottie-android)
 - [Splash](https://developer.android.com/develop/ui/views/launch/splash-screen)
 - [Version catalog](https://developer.android.com/build/migrate-to-catalogs)
