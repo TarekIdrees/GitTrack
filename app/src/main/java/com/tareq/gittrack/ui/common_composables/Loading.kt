@@ -1,9 +1,6 @@
 package com.tareq.gittrack.ui.common_composables
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,34 +21,29 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.tareq.gittrack.R
 
+
 @Composable
-fun Loading(
-    state: Boolean,
+internal fun Loading(
     modifier: Modifier = Modifier,
     size: Dp = 200.dp,
 ) {
     val composition by rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(R.raw.loading)
     )
-    AnimatedVisibility(
-        visible = state,
-        enter = fadeIn(animationSpec = tween(durationMillis = 500)),
-        exit = fadeOut(animationSpec = tween(durationMillis = 500))
+
+    Box(
+        modifier = modifier
+            .clickable(indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { })
+            .fillMaxSize()
+            .background(Color.Transparent),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = modifier
-                .clickable(indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = { })
-                .fillMaxSize()
-                .background(Color.Transparent),
-            contentAlignment = Alignment.Center
-        ) {
-            LottieAnimation(
-                modifier = Modifier.size(size),
-                composition = composition,
-                iterations = LottieConstants.IterateForever
-            )
-        }
+        LottieAnimation(
+            modifier = Modifier.size(size),
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
     }
 }

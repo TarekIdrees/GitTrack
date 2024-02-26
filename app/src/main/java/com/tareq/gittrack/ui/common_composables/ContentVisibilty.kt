@@ -5,18 +5,23 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ContentVisibility(
+internal fun ContentAnimation(
     state: Boolean,
     content: @Composable() AnimatedVisibilityScope.() -> Unit
 ) {
     AnimatedVisibility(
         visible = state,
-        enter = fadeIn(animationSpec = tween(durationMillis = 500)) + scaleIn(),
-        exit = fadeOut(animationSpec = tween(durationMillis = 500))
+        enter = fadeIn(
+            animationSpec = tween(durationMillis = 500)
+        ) + slideInVertically(),
+        exit = fadeOut(
+            animationSpec = tween(durationMillis = 500)
+        ) + slideOutVertically()
     ) {
         content()
     }
