@@ -35,7 +35,7 @@ class SearchViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
 
-    suspend fun searchGithubUsers(searchTerm: String) {
+    fun searchGithubUsers(searchTerm: String) {
         if (searchTerm.isBlank()) {
             val message = stringResources.emptySearchTerm
             showToast(message)

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -19,7 +18,6 @@ import com.tareq.gittrack.ui.common_composables.ContentAnimation
 import com.tareq.gittrack.ui.common_composables.Loading
 import com.tareq.gittrack.ui.feature.search_screen.composables.GithubUserCard
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import android.widget.Toast
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,14 +68,12 @@ fun SearchScreen(
 
 @Composable
 internal fun SearchContent(
-    searchGithubUsers: suspend (String) -> Unit = {},
+    searchGithubUsers: (String) -> Unit = {},
     onSearchTermUpdated: (String) -> Unit = {},
     onClickGithubUserCard: (String) -> Unit = {},
     searchResult: SearchUiState = SearchUiState.SearchPlaceholder,
     searchTerm: String = "",
 ) {
-    val scope = rememberCoroutineScope()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +87,7 @@ internal fun SearchContent(
 
         ContentAnimation(state = searchResult is SearchUiState.LoadFailed) {
             ConnectionErrorPlaceholder(
-                onClickTryAgain = { scope.launch { searchGithubUsers(searchTerm) } }
+                onClickTryAgain = { searchGithubUsers(searchTerm) }
             )
         }
 
