@@ -25,17 +25,19 @@ class GitTrackRepositoryImpl @Inject constructor(
     private val githubUserSourceImpl: GithubUserSourceImpl,
 ) : GitTrackRepository {
 
-    override suspend fun searchGithubUser(
+    override fun searchGithubUser(
         user: String
     ): Flow<GithubUser> {
-        val githubUser = wrap(gitTrackApiService.searchGithubUser(user)).toGithubUser()
-        // Caching the data into the database
-        insertGithubUserInDatabase(githubUser)
-        return flow { emit(githubUser) }
+        return flow {
+            val githubUser = wrap(gitTrackApiService.searchGithubUser(user)).toGithubUser()
+            // Caching the data into the database
+            insertGithubUserInDatabase(githubUser)
+            emit(githubUser)
+        }
     }
 
 
-    override suspend fun searchGithubUsers(searchTerm: String): Flow<List<GithubUser>> {
+    override fun searchGithubUsers(searchTerm: String): Flow<List<GithubUser>> {
         val users = mutableListOf<GithubUser>()
         return flow {
             try {
@@ -81,7 +83,7 @@ class GitTrackRepositoryImpl @Inject constructor(
         githubUserSourceImpl.insertGithubUser(user.toGithubUserEntity())
     }
 
-    override suspend fun getMatchedGithubUsersFromDatabase(userName: String): Flow<List<GithubUser>> {
+    override fun getMatchedGithubUsersFromDatabase(userName: String): Flow<List<GithubUser>> {
         return githubUserSourceImpl.getMatchedUsersByName(userName)
             .map {
                 it.map { githubUserEntity ->
