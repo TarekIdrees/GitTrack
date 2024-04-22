@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">GitTrack+</string>
+    <string name="no_connection">no network connection check your Internet</string>
+    <string name="forbidden">Exceed the limit of search wait 1 hour please</string>
+    <string name="forbiddenAndNotFoundOffline">no matched users was found offline and you exceed the limit of search wait 1 hour please</string>
+    <string name="internalServer">Server has a problem</string>
+    <string name="invalidData">github user name should not be empty</string>
+    <string name="notFoundOnline">no matched users was found</string>
+    <string name="notFoundOffline">no matched users was found offline check your network and try again</string>
+    <string name="unknownError">unknownError</string>
+    <string name="search">Search</string>
+    <string name="opps_no_connection">Opps, No connection!!</string>
+    <string name="try_again">Try again</string>
+    <string name="search_placholder">Search by GitHub username to retrieve a list of matched users</string>
+    <string name="empty_search_result">There are no GitHub users with this name</string>
+    <string name="company">company</string>
+    <string name="email">email</string>
+    <string name="location">location</string>
+    <string name="createdat">createdAt</string>
+    <string name="following">following</string>
+    <string name="followers">followers</string>
 </resources>

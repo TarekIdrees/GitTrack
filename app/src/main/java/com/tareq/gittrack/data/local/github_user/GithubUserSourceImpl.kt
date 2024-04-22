@@ -2,10 +2,10 @@ package com.tareq.gittrack.data.local.github_user
 
 
 import com.tareq.gittrack.GHUsersDatabase
+import com.tareq.gittrack.domain.util.ErrorHandler
 import gittrack.githubuserdb.GithubUserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -45,7 +45,7 @@ class GithubUserSourceImpl @Inject constructor(
                 userList.add(it)
             }
             if (userList.isEmpty()) {
-                emptyFlow<List<GithubUserEntity>>()
+                throw ErrorHandler.NotFoundOffline
             } else {
                 emit(userList)
             }

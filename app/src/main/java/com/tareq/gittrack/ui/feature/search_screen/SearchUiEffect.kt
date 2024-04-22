@@ -1,8 +1,7 @@
 package com.tareq.gittrack.ui.feature.search_screen
 
-import com.tareq.gittrack.ui.base.BaseUiEffect
 
-sealed class SearchUiEffect : BaseUiEffect {
-    object ShowToastEffect : SearchUiEffect()
-    data class OpenCardInBrowser(val url: String) : SearchUiEffect()
+sealed class SearchUiEffect {
+    data class ShowToastEffect(val message: String) : SearchUiEffect()
+    data class OpenCardInBrowserEffect(val url: String) : SearchUiEffect()
 }
